@@ -8,7 +8,10 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/airmark_reader" />
+            <option value="$PROJECT_DIR$/airmarkreader" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/opencv-4.1.1" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

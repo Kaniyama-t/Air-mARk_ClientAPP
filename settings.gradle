@@ -1,1 +1,2 @@
-include ':app'
+include ':app', ':airmarkreader', ':airmark_reader'
+include ':opencv-4.1.1'

@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="org.takuma_isec.airmark">
-
     <!-- / Permission for AR Core / -->
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera.ar"
-                  android:required="true" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <uses-feature
+            android:name="android.hardware.camera.ar"
+            android:required="false"/> <!-- / Permission for Camera / -->
+    <uses-feature android:name="android.hardware.camera"/>
+
+    <!-- / PERMISSIONS / -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.hardware.camera.autofocus"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
             android:allowBackup="true"
@@ -13,7 +21,12 @@
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            tools:ignore="GoogleAppIndexingWarning">
+        <activity
+                android:name=".FrontActivity"
+                android:label="@string/title_activity_front">
+        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -22,8 +35,7 @@
             </intent-filter>
         </activity>
 
-        <!-- / Build Option for AR Core / -->
-        <meta-data android:name="com.google.ar.core" android:value="required" />
+        <meta-data android:name="com.google.ar.core" android:value="optional" />
 
     </application>
 
