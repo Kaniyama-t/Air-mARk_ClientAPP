@@ -69,7 +69,7 @@ class FrontActivity : AppCompatActivity() {
             .commit()
         // --- [init] Architecture's Presenter 生成 / 初期化 ------------------------------------------------------------
         ArObjPresenter = ArObjectPresenter(this)
-        ArObjPresenter.registArCameraToReader()
+        ArObjPresenter.registArCameraToReader(this)
     }
 
 

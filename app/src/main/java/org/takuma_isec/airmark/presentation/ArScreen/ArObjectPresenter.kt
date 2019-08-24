@@ -24,7 +24,7 @@ class ArObjectPresenter(var activity: Activity) : IARObjectPresenter{
      * > まんま
      */
     @SuppressLint("MissingPermission")
-    override fun registArCameraToReader() {
+    override fun registArCameraToReader(activity: Activity) {
         codeReader = ARCodeReader.create(
                             activity =  activity,
                             listener =  onCodeReadListener,
