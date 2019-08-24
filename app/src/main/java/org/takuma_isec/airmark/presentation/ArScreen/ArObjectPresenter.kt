@@ -2,7 +2,8 @@ package org.takuma_isec.airmark.presentation.ArScreen
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.widget.Toast
+import android.view.View
+import com.google.android.material.snackbar.Snackbar
 import org.takuma_isec.airmark.domain.usecase.IARObjectPresenter
 import org.takuma_isec.airmark_reader.ARCodeReader
 import org.takuma_isec.airmark_reader.OnCodeReadListener
@@ -12,7 +13,7 @@ import java.util.*
 
 
 
-class ArObjectPresenter() : IARObjectPresenter{
+class ArObjectPresenter(rootView: View) : IARObjectPresenter{
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 》AR CodeReader Instance
@@ -23,14 +24,12 @@ class ArObjectPresenter() : IARObjectPresenter{
      *
      * > まんま
      */
-    private lateinit var activity : Activity
     @SuppressLint("MissingPermission")
     override fun registArCameraToReader(activity: Activity) {
         codeReader = ARCodeReader.create(
                             activity =  activity,
                             listener =  onCodeReadListener,
                             duration =  5000)
-        this.activity = activity
     }
 
     /***
@@ -44,7 +43,7 @@ class ArObjectPresenter() : IARObjectPresenter{
             for (d in qrCodeInfo){
                 str += "\n${d.body}"
             }
-            Toast.makeText(activity,str,Toast.LENGTH_SHORT).show()
+            Snackbar.make(rootView, str, Snackbar.LENGTH_SHORT).show()
         }
     }
 

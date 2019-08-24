@@ -180,6 +180,7 @@ class ARCodeReader(var cameraManager: CameraManager,var sharedCamera: SharedCame
                             partialResult: CaptureResult
                         ) {
                             process(partialResult)
+                            Log.i("AirmARk_Reader#captureImage", "[NOTIFY] Capture Progressed.")
                         }
 
                         override fun onCaptureCompleted(
@@ -188,6 +189,8 @@ class ARCodeReader(var cameraManager: CameraManager,var sharedCamera: SharedCame
                             result: TotalCaptureResult
                         ) {
                             process(result)
+                            Log.i("AirmARk_Reader#captureImage", "[NOTIFY] Capture Created Completely.")
+
                         }
                     },
                     UIHandler

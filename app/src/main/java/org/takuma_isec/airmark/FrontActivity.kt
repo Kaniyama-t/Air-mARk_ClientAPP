@@ -44,7 +44,7 @@ class FrontActivity : AppCompatActivity() {
         val availability = ArCoreApk.getInstance().checkAvailability(this)
         if (availability.isTransient) {
             // --- [Re-Check] 再確認 ------------------------------------------------------------------------------------
-            debugBottomMessage("❓ >> AR Core is Available",Snackbar.LENGTH_SHORT)
+            debugBottomMessage("❓ >> Re-Checking now...",Snackbar.LENGTH_SHORT)
             Handler().postDelayed(Runnable { checkARLibSystem() }, 200)
         }
         if (availability.isSupported) {
@@ -68,7 +68,7 @@ class FrontActivity : AppCompatActivity() {
             .replace(R.id.ux_fragment, arFragment)
             .commit()
         // --- [init] Architecture's Presenter 生成 / 初期化 ------------------------------------------------------------
-        ArObjPresenter = ArObjectPresenter()
+        ArObjPresenter = ArObjectPresenter(findViewById(R.id.container))
         ArObjPresenter.registArCameraToReader(this)
     }
 
