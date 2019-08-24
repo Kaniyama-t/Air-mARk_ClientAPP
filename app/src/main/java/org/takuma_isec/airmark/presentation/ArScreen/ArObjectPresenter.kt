@@ -12,7 +12,7 @@ import java.util.*
 
 
 
-class ArObjectPresenter(var activity: Activity) : IARObjectPresenter{
+class ArObjectPresenter() : IARObjectPresenter{
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 》AR CodeReader Instance
@@ -23,12 +23,14 @@ class ArObjectPresenter(var activity: Activity) : IARObjectPresenter{
      *
      * > まんま
      */
+    private lateinit var activity : Activity
     @SuppressLint("MissingPermission")
     override fun registArCameraToReader(activity: Activity) {
         codeReader = ARCodeReader.create(
                             activity =  activity,
                             listener =  onCodeReadListener,
                             duration =  5000)
+        this.activity = activity
     }
 
     /***

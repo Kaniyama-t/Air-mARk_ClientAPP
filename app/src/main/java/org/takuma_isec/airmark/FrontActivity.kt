@@ -68,7 +68,7 @@ class FrontActivity : AppCompatActivity() {
             .replace(R.id.ux_fragment, arFragment)
             .commit()
         // --- [init] Architecture's Presenter 生成 / 初期化 ------------------------------------------------------------
-        ArObjPresenter = ArObjectPresenter(this)
+        ArObjPresenter = ArObjectPresenter()
         ArObjPresenter.registArCameraToReader(this)
     }
 

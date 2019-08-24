@@ -1,5 +1,6 @@
 package org.takuma_isec.airmark.domain.usecase
 
+import android.app.Activity
 import org.takuma_isec.airmark_reader.datas.IncludingCodeData
 import java.util.*
 
@@ -13,7 +14,7 @@ interface IARObjectPresenter {
      * >> 引　数: Activity
      * >> 返り値: 無し
      */
-    fun registArCameraToReader()
+    fun registArCameraToReader(activity: Activity)
 
     //fun
     fun movedQRObject(qrCodeList: ArrayList<IncludingCodeData>)
