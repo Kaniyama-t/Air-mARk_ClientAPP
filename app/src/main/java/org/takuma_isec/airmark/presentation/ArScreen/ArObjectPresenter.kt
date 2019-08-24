@@ -12,7 +12,7 @@ import java.util.*
 
 
 
-class ArObjectPresenter(val activity: Activity) : IARObjectPresenter{
+class ArObjectPresenter(var activity: Activity) : IARObjectPresenter{
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 》AR CodeReader Instance
