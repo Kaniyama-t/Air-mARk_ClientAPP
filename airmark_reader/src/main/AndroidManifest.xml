@@ -1,5 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="org.takuma_isec.airmark_reader">
+    <!-- / Permission for AR Core / -->
+    <uses-feature
+            android:name="android.hardware.camera.ar"
+            android:required="false"/> <!-- / Permission for Camera / -->
+    <uses-feature android:name="android.hardware.camera"/>
 
-    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- / PERMISSIONS / -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.hardware.camera.autofocus"/>
 </manifest>

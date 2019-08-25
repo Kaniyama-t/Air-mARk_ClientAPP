@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="org.takuma_isec.airmark">
-    <!-- / Permission for AR Core / -->
-    <uses-permission android:name="android.permission.CAMERA"/>
 
     <uses-feature
             android:name="android.hardware.camera.ar"
