@@ -1,18 +1,13 @@
 package org.takuma_isec.airmark_reader
 
+//import com.google.ar.core.ImageFormat
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.graphics.BitmapFactory
-import android.graphics.ImageFormat
 import android.hardware.camera2.*
-import android.hardware.camera2.params.InputConfiguration
 import android.media.ImageReader
 import android.os.Handler
 import android.util.Log
-import android.util.Size
-import com.google.ar.core.Session
-import com.google.ar.core.SharedCamera
 import com.google.zxing.BinaryBitmap
 import com.google.zxing.NotFoundException
 import com.google.zxing.RGBLuminanceSource
@@ -21,8 +16,6 @@ import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.multi.qrcode.QRCodeMultiReader
 import org.takuma_isec.airmark_reader.datas.IncludingCodeData
 import java.net.URI
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 /**
@@ -32,87 +25,27 @@ import kotlin.collections.ArrayList
  * @author Kaniyama_t
  */
 class ARCodeReader(
-    var cameraManager: CameraManager,
-    var sharedCamera: SharedCamera,
-    val cameraId: String,
-    val cameraSize: Size,
-    val listener: OnCodeReadListener,
-    var UIHandler: Handler
-) : TimerTask() {
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // CompanionFunctions 》Create And Timer Set Functions
-    companion object {
-        fun create(activity: Activity, listener: OnCodeReadListener, duration: Long): Timer {
-            Log.i("AirmARk_Reader", "Called #create")
-
-            var timer = Timer()
-            val UIHandler = Handler()
-
-            // --- [Get] Getting Camera's static data --------------------------------------------------------------------------
-            val sharedSession = Session(activity, EnumSet.of(Session.Feature.SHARED_CAMERA))
-            var cameraManager = activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
-
-            sharedCamera.setAppSurfaces(this.cameraId, Arrays.asList(cpuImageReader.getSurface()));
-
-            // --- [Schedule] Set This To Read Image To QRData.
-
-            timer.scheduleAtFixedRate(
-                ARCodeReader(
-                    cameraManager = cameraManager,
-                    sharedCamera = sharedSession.sharedCamera,
-                    cameraId = sharedSession.cameraConfig.cameraId,
-                    cameraSize = getSupportedPreviewSizes(
-                        activity,
-                        sharedSession.cameraConfig.cameraId
-                    )[0],
-                    listener = listener,
-                    UIHandler = UIHandler
-                ),
-                1000,
-                duration
-            )
-            return timer
-        }
-
-        private fun getSupportedPreviewSizes(context: Context, cameraId: String): List<Size> {
-            var previewSizes: List<Size> = ArrayList()
-            val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
-            try {
-                val characteristics = cameraManager.getCameraCharacteristics(cameraId)
-                val map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
-                    ?: return previewSizes
-                previewSizes = Arrays.asList(map.getOutputSizes(ImageFormat.YUV_420_888)[0])
-                Collections.sort(previewSizes, SizeComparator)
-            } catch (e: CameraAccessException) {
-                e.printStackTrace()
-            }
-
-            return previewSizes
-        }
-
-        private val SizeComparator = object : Comparator<Size> {
-            override fun compare(lhs: Size, rhs: Size): Int {
-                var result = rhs.width - lhs.width
-                if (result == 0) {
-                    result = rhs.height - lhs.height
-                }
-                return result
-            }
-        }
-    }
+    activity: Activity,
+    listener: OnCodeReadListener,
+    uithireadHandler: Handler?,
+    backgroundHandler: Handler?,
+    duration: Long
+) : ARShareCameraLifecycle(activity, listener, uithreadHandler = uithireadHandler, backgroundHandler = backgroundHandler,duration = duration) {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // BodyFunctions》AR's QRCode System
+
+    private lateinit var mImageReader: ImageReader
 
     /**
      * 定期実行する関数
      * 本クラスは処理を関数ごとに分けているため、ここでは概略のみを確認できます。
      */
-    override fun run() {
+    @SuppressLint("MissingPermission")
+    override fun process(camera: CameraDevice) {
         Log.i("AirmARk_Reader", "QRCodeCheck START")
 
-        //handler = Handler()
+        //backgroundHandler = Handler()
 
         // --- [SETUP] SharedCamera(ARCore's Object) -----------------------------------------------------------------
         setupSharedCamera(object : CameraDevice.StateCallback() {
@@ -126,15 +59,17 @@ class ARCodeReader(
                             // [DECODE] Decode bitmap to QRCode(ZXing's Object) ------------------------------------------
                             val resultData = decodeImageToQRCode(readData!!)
 
-                            camera.close()
-                            if (resultData is Array<Result>)
+                            sharedSession.pause()
+                            //camera.close()
+                            if (resultData!!.isNotEmpty())
                             // resultData is NOT null
-                                UIHandler.post { listener.read(convertResult(resultData)) }
+                                uithireadHandler?.post { listener.read(convertResult(resultData)) }
                             else
                             // resultData is NULL
-                                UIHandler.post { listener.read(ArrayList()) }
+                                uithireadHandler?.post { listener.read(ArrayList()) }
                         }
-                    })
+                    }
+                )
             }
 
             override fun onError(camera: CameraDevice, error: Int) {
@@ -153,9 +88,10 @@ class ARCodeReader(
     @SuppressLint("MissingPermission")
     private fun setupSharedCamera(cameraCallback: CameraDevice.StateCallback) {
         // --- [SET-READER] お手製カメラリーダーを生成して設定 -----------------------------------------------------------
-        val wrappedCallback = sharedCamera.createARDeviceStateCallback(cameraCallback, UIHandler)
+        val wrappedCallback =
+            sharedCamera.createARDeviceStateCallback(cameraCallback, backgroundHandler)
         // ※ 本来ならカメラPermission取得が必要(AR Coreにより取得済み)
-        cameraManager.openCamera(cameraId, wrappedCallback, UIHandler)
+        cameraManager.openCamera(cameraId, wrappedCallback, backgroundHandler)
         Log.i("AirmARk_Reader#setupSharedCamera", "[QUERY] Requested Camera.")
     }
 
@@ -168,80 +104,83 @@ class ARCodeReader(
         cameraDevice: CameraDevice,
         onImageAvailableListener: ImageReader.OnImageAvailableListener
     ) {
-        // --- [CREATE] Process when Read Image ----------------------------------------------------------------
-        var mImageReader =
-            ImageReader.newInstance(cameraSize.width, cameraSize.height, ImageFormat.JPEG, 2)
-        mImageReader.setOnImageAvailableListener(onImageAvailableListener, UIHandler)
-        Log.i("AirmARk_Reader#setupSharedCamera", "[SUCCEED] Created ImageReader.")
+
+        Log.i("AirmARk_reader", "captureImage Called.")
+        mImageReader = ImageReader.newInstance(
+            cameraSize.width,
+            cameraSize.height,
+            android.graphics.ImageFormat.JPEG,
+            2
+        )
+        Log.i("AirmARk_reader", "Created ImageReader.")
 
         var readerSurface = mImageReader.surface
 
         // --- [CREATE SESSION] ----------------------------------------------------------------------------------------
         var surfaces = sharedCamera.arCoreSurfaces
         surfaces.add(readerSurface)
-        cameraDevice.createReprocessableCaptureSession(
-            InputConfiguration(cameraSize.width,cameraSize.height,ImageFormat.YUV_420_888),
-            surfaces,
-            object : CameraCaptureSession.StateCallback() {
-                override fun onConfigureFailed(session: CameraCaptureSession) {
-                    Log.e("AirmARk_Reader", "QRCode Check Capture Failed")
+        Log.i("AirmARk_reader", "surface ArrayList prepared.")
+
+        val readerWrapSessionCallback = sharedCamera.createARSessionStateCallback(object :
+            CameraCaptureSession.StateCallback() {
+            override fun onConfigureFailed(session: CameraCaptureSession) {
+                Log.e("AirmARk_Reader", "QRCode Check Capture Failed")
+            }
+
+            override fun onConfigured(session: CameraCaptureSession) {
+                // --- [SET PARAMETER] Setting Take Picture Parameter --------------------------------------------------
+                var captureReqest =
+                    cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE)
+                captureReqest.set(
+                    CaptureRequest.CONTROL_AF_TRIGGER,
+                    CameraMetadata.CONTROL_AF_TRIGGER_START
+                )
+                for (s in surfaces) {
+                    captureReqest.addTarget(s)
                 }
 
-                override fun onConfigured(session: CameraCaptureSession) {
-                    // --- [SET PARAMETER] Setting Take Picture Parameter --------------------------------------------------
-                    var captureReqest =
-                        cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE)
-                    captureReqest.set(
-                        CaptureRequest.CONTROL_AF_TRIGGER,
-                        CameraMetadata.CONTROL_AF_TRIGGER_START
-                    )
-                    for (s in surfaces) {
-                        captureReqest.addTarget(s)
-                    }
+                session?.setRepeatingRequest(captureReqest.build(), null, null)
 
-                    session?.setRepeatingRequest(previewRequestBuilder.build(), null, null)
+                // --- [TAKE-PICTURE!] WEEEEEEE ------------------------------------------------------------------------
+                session.capture(
+                    captureReqest.build(),
+                    object : CameraCaptureSession.CaptureCallback() {
+                        // Decode And Notify
+                        fun process(result: CaptureResult) {
+                        }
 
-                    // --- [TAKE-PICTURE!] WEEEEEEE ------------------------------------------------------------------------
-                    session.capture(
-                        captureReqest.build(),
-                        object : CameraCaptureSession.CaptureCallback() {
-                            // Decode And Notify
-                            fun process(result: CaptureResult) {
-                            }
+                        override fun onCaptureProgressed(
+                            session: CameraCaptureSession,
+                            request: CaptureRequest,
+                            partialResult: CaptureResult
+                        ) {
+                            process(partialResult)
+                            Log.i(
+                                "AirmARk_Reader#captureImage",
+                                "[NOTIFY] Capture Progressed."
+                            )
+                        }
 
-                            override fun onCaptureProgressed(
-                                session: CameraCaptureSession,
-                                request: CaptureRequest,
-                                partialResult: CaptureResult
-                            ) {
-                                process(partialResult)
-                                Log.i(
-                                    "AirmARk_Reader#captureImage",
-                                    "[NOTIFY] Capture Progressed."
-                                )
-                            }
+                        override fun onCaptureCompleted(
+                            session: CameraCaptureSession,
+                            request: CaptureRequest,
+                            result: TotalCaptureResult
+                        ) {
+                            process(result)
+                            Log.i(
+                                "AirmARk_Reader#captureImage",
+                                "[NOTIFY] Capture Created Completely."
+                            )
 
-                            override fun onCaptureCompleted(
-                                session: CameraCaptureSession,
-                                request: CaptureRequest,
-                                result: TotalCaptureResult
-                            ) {
-                                process(result)
-                                Log.i(
-                                    "AirmARk_Reader#captureImage",
-                                    "[NOTIFY] Capture Created Completely."
-                                )
+                        }
+                    },
+                    backgroundHandler
+                )
 
-                            }
-                        },
-                        UIHandler
-                    )
+            }
+        }, backgroundHandler)
 
-                }
-
-            },
-            UIHandler
-        )
+        cameraDevice.createCaptureSession(surfaces, readerWrapSessionCallback, backgroundHandler)
     }
 
     /**

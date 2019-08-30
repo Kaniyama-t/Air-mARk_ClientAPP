@@ -1,13 +1,20 @@
 package org.takuma_isec.airmark
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.ar.core.ArCoreApk
 import com.google.ar.sceneform.ux.ArFragment
+import com.google.zxing.integration.android.IntentIntegrator
 import org.takuma_isec.airmark.presentation.ArScreen.ArObjectPresenter
+
+
+
+
 
 
 class FrontActivity : AppCompatActivity() {
@@ -67,7 +74,6 @@ class FrontActivity : AppCompatActivity() {
             .commit()
         ArObjPresenter = ArObjectPresenter()
         ArObjPresenter.registArCameraToReader(this@FrontActivity)
-
     }
 
 
@@ -100,4 +106,21 @@ class FrontActivity : AppCompatActivity() {
     fun debugBottomMessage(message: String, duration: Int) {
         Snackbar.make(findViewById(R.id.container), message, duration).show()
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.i("QRCode_Reader","Called onActivityResult.")
+        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        if (result != null) {
+            if (result.contents == null) {
+                Log.i("QRCode_Reader","canceled.")
+            } else {
+                // EditTextにQRコードの内容をセット
+                Log.i("QRCode_Reader","--------------------------------------------------------------------------\nGot Text!!!\ntext: ${result.contents}")
+                ArObjPresenter.AddQrObject(result.contents)
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
 }
