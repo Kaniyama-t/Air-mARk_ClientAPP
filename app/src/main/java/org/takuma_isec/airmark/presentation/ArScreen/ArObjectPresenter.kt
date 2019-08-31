@@ -1,6 +1,7 @@
 package org.takuma_isec.airmark.presentation.ArScreen
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.util.Log
 import android.view.MotionEvent
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -38,11 +39,19 @@ class ArObjectPresenter() : IARObjectPresenter {
     }
 
     public var anchor: Anchor? = null
-    public var card : Card? = null
+    public var card: Card? = null
 
     val onCardLoadedListener = object : ArObjectRepository.Listener {
         override fun onLoaded(c: Card) {
             card = c
+            with(activity) {
+                pcUsernameView.text = c.name
+                pcTwitterView.text = c.Twitter
+                pcFacebookView.text = c.Facebook
+                pcGithubView.text = c.Github
+
+                cardAnimation(ANIM_OPEN_CARD)
+            }
 //            activity.arFragment.arSceneView.session!!.update()
 //            if (activity.arFragment.arSceneView.arFrame!!.camera.trackingState == TrackingState.TRACKING) {
 //                addNodeToScene(
@@ -86,15 +95,18 @@ class ArObjectPresenter() : IARObjectPresenter {
 //        )
         activity.arFragment.setOnTapArPlaneListener { hitResult: HitResult, plane: Plane, motionEvent: MotionEvent ->
             if (card == null) return@setOnTapArPlaneListener
-            if (plane.type != Plane.Type.HORIZONTAL_UPWARD_FACING) {
-                return@setOnTapArPlaneListener
+            var obj = card!!.ThreeDObject
+            if (obj is Renderable) {
+                if (plane.type != Plane.Type.HORIZONTAL_UPWARD_FACING) {
+                    return@setOnTapArPlaneListener
+                }
+                val anchor = hitResult.createAnchor()
+                addNodeToScene(this.activity.arFragment, anchor, obj)
             }
-            val anchor = hitResult.createAnchor()
-            addNodeToScene(activity.arFragment,anchor, card!!.ThreeDObject)
         }
 
 
-        activity.findViewById<FloatingActionButton>(R.id.captureQRFab).setOnClickListener {
+        this.activity.findViewById<FloatingActionButton>(R.id.captureQRFab).setOnClickListener {
             val integrator = IntentIntegrator(activity)
 //            integrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES)
 //            integrator.setPrompt("Scan a barcode")
@@ -106,7 +118,7 @@ class ArObjectPresenter() : IARObjectPresenter {
 
         // -----------------------------------------------------------------------------------------
 
-        this.activity = activity
+        this.activity = this.activity
     }
 
     /***

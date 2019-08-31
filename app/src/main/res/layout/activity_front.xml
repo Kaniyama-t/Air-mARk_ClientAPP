@@ -14,17 +14,117 @@
             android:layout_weight="1">
 
         <FrameLayout
-                android:id="@+id/ux_fragment"
+                android:id="@+id/arContainer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:visibility="visible">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/captureQRFab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|bottom"
-                android:src="@drawable/material_qr_reader"
-            />
+            <FrameLayout
+                    android:id="@+id/ux_fragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            <androidx.cardview.widget.CardView
+                    android:id="@+id/personalCardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_margin="15dp"
+                    android:visibility="gone">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:orientation="vertical">
+
+                    <TextView
+                            android:id="@+id/pCardUsername"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="UserName"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                        <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginEnd="10dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/logo_twitter" />
+
+                        <TextView
+                                android:id="@+id/pCardTwitter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="UserName" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                        <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginEnd="10dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/logo_facebook" />
+
+                        <TextView
+                                android:id="@+id/pCardFacebook"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="UserName" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                        <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginEnd="10dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/logo_github" />
+
+                        <TextView
+                                android:id="@+id/pCardGithub"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="UserName" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/captureQRFab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|bottom"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/material_qr_reader" />
+
+        </FrameLayout>
+
+        <FrameLayout
+                android:id="@+id/utilsContainer"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
     </FrameLayout>
 

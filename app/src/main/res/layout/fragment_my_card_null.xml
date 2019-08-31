@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+
+            <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/material_add_your_card" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="My名刺を追加しましょう！"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+            <!--<TextView
+                    android:textSize="16sp"
+                    android:text="自分の名刺(png形式)を登録すると、名刺の提示がグッと楽になります！"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>-->
+            <Button
+                    android:id="@+id/registMyCardButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="名刺を登録" />
+        </LinearLayout>
+
+    </ScrollView>
+
+</FrameLayout>
