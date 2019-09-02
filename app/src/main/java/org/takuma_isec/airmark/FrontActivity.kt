@@ -64,7 +64,7 @@ class FrontActivity : AppCompatActivity() {
             enableARSystem()
         } else {
             // --- [NOT Available] 起動不可 -----------------------------------------------------------------------------
-            debugBottomMessage("× >> AR Core is NOT Available", Snackbar.LENGTH_INDEFINITE)
+            debugBottomMessage("× >> AR Core is NOT Available", Snackbar.LENGTH_SHORT)
         }
     }
 

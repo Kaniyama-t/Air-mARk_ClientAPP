@@ -81,7 +81,7 @@ class Ar3DObjectFactory private constructor(
         backgroundHandler.post {
             val queue = Volley.newRequestQueue(context)
             val req = InputStreamVolleyRequest(
-                Request.Method.GET,
+                Request.Method.POST,
                 objURL,
                 this,
                 this,

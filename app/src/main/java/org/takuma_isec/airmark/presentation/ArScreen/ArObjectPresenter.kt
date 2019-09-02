@@ -1,7 +1,6 @@
 package org.takuma_isec.airmark.presentation.ArScreen
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.util.Log
 import android.view.MotionEvent
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -106,7 +105,7 @@ class ArObjectPresenter() : IARObjectPresenter {
         }
 
 
-        this.activity.findViewById<FloatingActionButton>(R.id.captureQRFab).setOnClickListener {
+        activity.findViewById<FloatingActionButton>(R.id.captureQRFab).setOnClickListener {
             val integrator = IntentIntegrator(activity)
 //            integrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES)
 //            integrator.setPrompt("Scan a barcode")
@@ -118,7 +117,7 @@ class ArObjectPresenter() : IARObjectPresenter {
 
         // -----------------------------------------------------------------------------------------
 
-        this.activity = this.activity
+        this.activity = activity
     }
 
     /***

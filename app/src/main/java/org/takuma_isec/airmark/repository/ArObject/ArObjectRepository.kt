@@ -38,7 +38,7 @@ class ArObjectRepository(
                 // エラー処理 error.networkResponseで確認
                 val ObjFactory = Ar3DObjectFactory.newInstance(
                     context,handler,
-                    "http://192.168.11.12:8880/Gun_Bot.sfb",
+                    res.getString("3DObjURL"),
                     object : Ar3DObjectFactory.Listener {
                         override fun onLoaded(obj: Renderable) {
                             handler.post{
@@ -46,13 +46,13 @@ class ArObjectRepository(
                                 listener.onLoaded(
                                     Card(
                                         context = context,
-                                        name = "testUser",
-                                        Twitter = "Kaniyama_404",
-                                        Facebook = "https://facebook.com/kaniyama-t/",
-                                        Github = "kaniyama-t",
+                                        name = res.getString("name"),
+                                        Twitter = res.getString("sns_twitter"),
+                                        Facebook = res.getString("sns_facebook"),
+                                        Github = res.getString("sns_github"),
                                         othersSNS = HashMap<String, String>(),
                                         ThreeDObject = obj,
-                                        ThreeDObjectURL = URL("http://192.168.11.12:8880/Gun_Bot.sfb")
+                                        ThreeDObjectURL = URL(res.getString("3DObjURL"))
                                     )
                                 )
 
