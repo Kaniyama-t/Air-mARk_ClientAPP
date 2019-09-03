@@ -45,6 +45,12 @@
                             android:text="UserName"
                             android:textSize="22sp"
                             android:textStyle="bold" />
+                    <TextView
+                            android:layout_marginTop="5dp"
+                            android:id="@+id/pCardDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Description" />
 
                     <LinearLayout
                             android:layout_width="match_parent"

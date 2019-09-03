@@ -45,6 +45,7 @@ class ArObjectPresenter() : IARObjectPresenter {
             card = c
             with(activity) {
                 pcUsernameView.text = c.name
+                pcDescriptionView.text = c.desc
                 pcTwitterView.text = c.Twitter
                 pcFacebookView.text = c.Facebook
                 pcGithubView.text = c.Github

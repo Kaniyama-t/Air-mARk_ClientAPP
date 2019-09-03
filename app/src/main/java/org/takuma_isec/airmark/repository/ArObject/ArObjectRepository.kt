@@ -47,6 +47,7 @@ class ArObjectRepository(
                                     Card(
                                         context = context,
                                         name = res.getString("name"),
+                                        desc = res.getString("desc"),
                                         Twitter = res.getString("sns_twitter"),
                                         Facebook = res.getString("sns_facebook"),
                                         Github = res.getString("sns_github"),
@@ -111,6 +112,7 @@ class ArObjectRepository(
                                     Card(
                                         context = context,
                                         name = "testUser",
+                                        desc = "ERROR",
                                         Twitter = "Kaniyama_404",
                                         Facebook = "https://facebook.com/kaniyama-t/",
                                         Github = "kaniyama-t",

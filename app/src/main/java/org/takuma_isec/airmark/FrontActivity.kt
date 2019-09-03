@@ -12,14 +12,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.ar.core.ArCoreApk
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.zxing.integration.android.IntentIntegrator
-import org.takuma_isec.airmark.data.Card
 import org.takuma_isec.airmark.presentation.ArScreen.ArObjectPresenter
-import java.net.URL
 
 
 class FrontActivity : AppCompatActivity() {
@@ -113,6 +110,7 @@ class FrontActivity : AppCompatActivity() {
 
     public lateinit var pCard: CardView
     public lateinit var pcUsernameView: TextView
+    public lateinit var pcDescriptionView: TextView
     public lateinit var pcTwitterView: TextView
     public lateinit var pcFacebookView: TextView
     public lateinit var pcGithubView: TextView
@@ -120,6 +118,7 @@ class FrontActivity : AppCompatActivity() {
     fun initView() {
         pCard = findViewById<CardView>(R.id.personalCardView)
         pcUsernameView = findViewById<TextView>(R.id.pCardUsername)
+        pcDescriptionView = findViewById(R.id.pCardDescription)
         pcTwitterView = findViewById<TextView>(R.id.pCardTwitter)
         pcFacebookView = findViewById<TextView>(R.id.pCardFacebook)
         pcGithubView = findViewById<TextView>(R.id.pCardGithub)
@@ -127,23 +126,23 @@ class FrontActivity : AppCompatActivity() {
         pCard.animation = pCardAnimation
 
         //TODO: DEBUG
-        findViewById<FloatingActionButton>(R.id.captureQRFab).setOnClickListener {
-            var c = Card(
-                context = this,
-                name = "Kaniyama_t",
-                Twitter = "Kaniyama_404",
-                Facebook = "https://facebook.com/kaniyama-t/",
-                Github = "kaniyama-t",
-                othersSNS = HashMap<String, String>(),
-                ThreeDObject = null,
-                ThreeDObjectURL = URL("http://192.168.11.12:8880/Gun_Bot.sfb")
-            )
-            pcUsernameView.text = c.name
-            pcTwitterView.text = c.Twitter
-            pcFacebookView.text = c.Facebook
-            pcGithubView.text = c.Github
-            cardAnimation(ANIM_OPEN_CARD)
-        }
+//        findViewById<FloatingActionButton>(R.id.captureQRFab).setOnClickListener {
+//            var c = Card(
+//                context = this,
+//                name = "Kaniyama_t",
+//                Twitter = "Kaniyama_404",
+//                Facebook = "https://facebook.com/kaniyama-t/",
+//                Github = "kaniyama-t",
+//                othersSNS = HashMap<String, String>(),
+//                ThreeDObject = null,
+//                ThreeDObjectURL = URL("http://192.168.11.12:8880/Gun_Bot.sfb")
+//            )
+//            pcUsernameView.text = c.name
+//            pcTwitterView.text = c.Twitter
+//            pcFacebookView.text = c.Facebook
+//            pcGithubView.text = c.Github
+//            cardAnimation(ANIM_OPEN_CARD)
+//        }
     }
 
     val ANIM_OPEN_CARD = 101
